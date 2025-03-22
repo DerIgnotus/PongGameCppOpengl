@@ -42,7 +42,7 @@ int main()
 
 	// Create the window
 	// Check if window creating failed
-	GLFWwindow* window = glfwCreateWindow(800, 800, "Cpp Game", NULL, NULL);
+	GLFWwindow* window = glfwCreateWindow(1200, 800, "Cpp Game", NULL, NULL);
 	if (window == NULL)
 	{
 		std::cout << "Failed to create GLFW window" << std::endl;
@@ -58,14 +58,14 @@ int main()
 	gladLoadGL();
 
 	// Set the viewport
-	glViewport(0, 0, 800, 800);
+	glViewport(0, 0, 1200, 800);
 
 	// Create Shaderprogram
 	Shader shaderProgram("default.vert", "default.frag");
 	shaderProgram.Activate();
 
 	// Correct View
-	glm::mat4 projection = glm::ortho(0.0f, 800.0f, 0.0f, 800.0f, -1.0f, 1.0f);
+	glm::mat4 projection = glm::ortho(0.0f, 1200.0f, 0.0f, 1200.0f, -1.0f, 1.0f);
 	GLuint projLoc = glGetUniformLocation(shaderProgram.ID, "projection");
 	glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
 
@@ -86,8 +86,8 @@ int main()
 
 	Rectangle::VAO = vao.ID;
 
-	Rectangle rect_1(100.0f, 100.0f, 100, 100);
-	Rectangle rect_2(200.0f, 200.0f, 100, 100);
+	Rectangle rect_1(100.0f, 600.0f, 25, 150);
+	Rectangle rect_2(1200.0f - 100.0f, 600.0f, 25, 150);
 
 	rectangles.push_back(rect_1);
 	rectangles.push_back(rect_2);
@@ -104,6 +104,22 @@ int main()
 		shaderProgram.Activate();
 		glUniform1f(uniID, 0.5f);
 
+		if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+		{
+			rect_1.Move(0);
+		}
+		if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+		{
+			rect_1.Move(1);
+		}
+		if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
+		{
+			rect_2.Move(0);
+		}
+		if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
+		{
+			rect_2.Move(1);
+		}
 
 		rect_1.Draw(shaderProgram);
 		rect_2.Draw(shaderProgram);

@@ -13,6 +13,14 @@ Rectangle::~Rectangle()
 
 void Rectangle::Move(int direction)
 {
+	if (direction == 1)
+	{
+		posY -= 3.5f;
+	}
+	else
+	{
+		posY += 3.5f;
+	}
 }
 
 
