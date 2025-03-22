@@ -25,13 +25,21 @@ int main()
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-
 	std::vector<Rectangle> rectangles;
 	
+	GLfloat vertices[] = {
+			-0.5f, -0.5f,
+			0.5f, -0.5f,
+			0.5f,  0.5f,
+			-0.5f,  0.5f,
+	};
 	
+	GLuint indices[] =
+	{
+		0, 1, 2,
+		2, 3, 0
+	};
 
-
-	
 	// Create the window
 	// Check if window creating failed
 	GLFWwindow* window = glfwCreateWindow(800, 800, "Cpp Game", NULL, NULL);
@@ -63,10 +71,27 @@ int main()
 
 	GLuint uniID = glGetUniformLocation(shaderProgram.ID, "scale");
 
-	Rectangle rect1(0.0f, 0.0f, 100, 100);
-	rectangles.push_back(rect1);
-	Rectangle rect2(200.0f, 200.0f, 100, 100);
-	rectangles.push_back(rect2);
+
+	VAO vao;
+	vao.Bind();
+
+	VBO vbo(vertices, sizeof(vertices));
+	EBO ebo(indices, sizeof(indices));
+
+	vao.LinkAttrib(vbo, 0, 2, GL_FLOAT, 2 * sizeof(float), 0);
+
+	vao.Unbind();
+	vbo.Unbind();
+	ebo.Unbind();
+
+	Rectangle::VAO = vao.ID;
+
+	Rectangle rect_1(100.0f, 100.0f, 100, 100);
+	Rectangle rect_2(200.0f, 200.0f, 100, 100);
+
+	rectangles.push_back(rect_1);
+	rectangles.push_back(rect_2);
+
 
 	// Main loop
 	while (!glfwWindowShouldClose(window))
@@ -79,11 +104,9 @@ int main()
 		shaderProgram.Activate();
 		glUniform1f(uniID, 0.5f);
 
-		for (Rectangle& rect : rectangles)
-		{
-			rect.BindVAO();
-			glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-		}
+
+		rect_1.Draw(shaderProgram);
+		rect_2.Draw(shaderProgram);
 
 		// Swap buffers
 		glfwSwapBuffers(window);
@@ -95,11 +118,6 @@ int main()
 
 	// Clean things up
 
-	for (Rectangle& rect : rectangles)
-	{
-		rect.~Rectangle();
-	}
-
 	shaderProgram.Delete();
 
 	glfwDestroyWindow(window);
@@ -107,3 +125,5 @@ int main()
 
 	return 0;
 }
+
+unsigned int Rectangle::VAO = 0;
