@@ -22,6 +22,9 @@ public:
 	void Activate();
 	void Delete();
 	void setMat4(const std::string& name, const glm::mat4& mat) const;
+	void setInt(const std::string& name, int value);
+	void setBool(const std::string& name, bool value);
+	void setVec3(const std::string& name, const glm::vec3& value) const;
 
 private:
 	void compileErrors(unsigned int shader, const char* type);
